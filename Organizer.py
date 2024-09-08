@@ -106,11 +106,6 @@ def newExtensionCheck(extension):
             all_extensions.extend(extension)
     
 
-        
-
-
-        
-
 def main():
     newExtensionCheck()
     cleanerFunction()
