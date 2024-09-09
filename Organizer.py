@@ -4,16 +4,17 @@ from shutil import move
 import logging
 
 
-source_dir = "C:\Users\dgsy2\Downloads"
-musicDestination = "C:\Users\dgsy2\Music"
-videoDestination = "C:\Users\dgsy2\Videos"
-documentDestination = "C:\Users\dgsy2\Documents\WordDocuments"
-PDFDestination = "C:\Users\dgsy2\Documents\PDF"
-spreadsheetDestination = "C:\Users\dgsy2\Documents\Spreadsheet"
-imageDestination = "C:\Users\dgsy2\Pictures"
-miscellaneousDestination = "C:\Users\dgsy2\Documents\Misc"
+source_dir = r"C:\Users\dgsy2\Downloads"
+musicDestination = r"C:\Users\dgsy2\Music"
+videoDestination = r"C:\Users\dgsy2\Videos"
+documentDestination = r"C:\Users\dgsy2\Documents\WordDocuments"
+PDFDestination = r"C:\Users\dgsy2\Documents\PDF"
+spreadsheetDestination = r"C:\Users\dgsy2\Documents\Spreadsheet"
+imageDestination = r"C:\Users\dgsy2\Pictures"
+miscellaneousDestination = r"C:\Users\dgsy2\Documents\Misc"
 
 all_extensions = []
+
 image_extensions = [".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".webp", ".tiff", ".tif", ".psd", ".raw", ".arw", ".cr2", ".nrw", ".k25", ".bmp", ".dib", ".heif", ".heic", ".ind", ".indd", ".indt", ".jp2", ".j2k", ".jpf", ".jpf", ".jpx", ".jpm", ".mj2", ".svg", ".svgz", ".ai", ".eps", ".ico"]
 
 video_extensions = [".webm", ".mpg", ".mp2", ".mpeg", ".mpe", ".mpv", ".ogg", ".mp4", ".mp4v", ".m4v", ".avi", ".wmv", ".mov", ".qt", ".flv", ".swf", ".avchd"]
@@ -32,11 +33,12 @@ def create_unique_file(location, name):
     counter = 1
     
     while exists(f"{location}/{name}"):
-        name = f"{filename}{str(counter)}{extension}"
+        name = f"{filename}_{counter}{extension}"
         counter += 1
     return name
 
 def move_file(location, entry, name):
+    print(f"{location}/{name}")
     if exists(f"{location}/{name}"):
         uniqueName = create_unique_file(location, name)
         oldName = join(location,name)
@@ -47,6 +49,7 @@ def move_file(location, entry, name):
 def cleanerFunction():
     with scandir(source_dir) as entries:
         for entry in entries:
+            print(f"{entry.name}")
             name = entry.name
             checkIfAudio(entry, name)
             checkIfVideo(entry, name)
@@ -55,6 +58,7 @@ def cleanerFunction():
             checkIfPDF(entry, name)
             checkIfSpreadsheet(entry, name)
             checkIfMisc(entry, name)
+
 def checkIfAudio(entry, name):
         for audio_extension in audio_extensions:
             if name.endswith(audio_extension) or name.endswith(audio_extension.upper()):
@@ -92,22 +96,24 @@ def checkIfSpreadsheet(entry, name):
                 logging.info(f"Moved spreadsheet file: {name} to {spreadsheetDestination}")
     
 def checkIfMisc(entry, name):
-        newExtensionCheck(entry)
+        newExtensionCheck(name)
         for all_extension in all_extensions:
             if (name.endswith(all_extension) or name.endswith(all_extension.upper())) != True :
                 move_file(miscellaneousDestination, entry, name)
                 logging.info(f"Moved miscellaneious file: {name} to {miscellaneousDestination}")
+                continue
 
-def newExtensionCheck(extension):
-    for extension in all_extensions:
-        if all(extension in all_extension for all_extension in [image_extensions, video_extensions, audio_extensions, document_extensions, pdf_extensions, spreadsheet_extensions]):
-            break
-        else:
-            all_extensions.extend(extension)
+def newExtensionCheck(name):
+    filename, extension = splitext(name)
+    ##for extension in all_extensions:
+    if any(extension in all_extension for all_extension in [image_extensions, video_extensions, audio_extensions, document_extensions, pdf_extensions, spreadsheet_extensions]):
+        print(f"found Extension {extension}")
+    else:
+        if extension not in all_extensions:
+            all_extensions.append(extension)
     
 
 def main():
-    newExtensionCheck()
     cleanerFunction()
     
 if __name__ == "__main__":
