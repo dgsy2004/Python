@@ -12,6 +12,8 @@ PDFDestination = r"C:\Users\dgsy2\Documents\PDF"
 spreadsheetDestination = r"C:\Users\dgsy2\Documents\Spreadsheet"
 imageDestination = r"C:\Users\dgsy2\Pictures"
 miscellaneousDestination = r"C:\Users\dgsy2\Documents\Misc"
+ZipDestination = r"C:\Users\dgsy2\Documents\ZipFiles"
+InstallerDestination = r"C:\Users\dgsy2\Documents\Installers"
 
 all_extensions = []
 
@@ -21,9 +23,13 @@ video_extensions = [".webm", ".mpg", ".mp2", ".mpeg", ".mpe", ".mpv", ".ogg", ".
 
 audio_extensions = [".m4a", ".flac", "mp3", ".wav", ".wma", ".aac"]
 
-document_extensions = [".doc", ".docx", ".odt", ".ppt", ".pptx"]
+document_extensions = [".doc", ".docx", ".odt", ".ppt", ".pptx", ".html", ".htm"]
 
 pdf_extensions = [".pdf"]
+
+Zip_extensions = [".zip"]
+
+Installer_extensions = [".exe"]
 
 spreadsheet_extensions = [".xls", ".xlsx"]
 
@@ -49,7 +55,7 @@ def move_file(location, entry, name):
 def cleanerFunction():
     with scandir(source_dir) as entries:
         for entry in entries:
-            print(f"{entry.name}")
+            ##print(f"{entry.name}")
             name = entry.name
             checkIfAudio(entry, name)
             checkIfVideo(entry, name)
@@ -57,7 +63,9 @@ def cleanerFunction():
             checkIfDocument(entry, name)
             checkIfPDF(entry, name)
             checkIfSpreadsheet(entry, name)
-            checkIfMisc(entry, name)
+            checkIfInstaller(entry, name)
+            checkIfZip(entry, name)
+            ###checkIfMisc(entry, name)
 
 def checkIfAudio(entry, name):
         for audio_extension in audio_extensions:
@@ -94,6 +102,18 @@ def checkIfSpreadsheet(entry, name):
             if name.endswith(spreadsheet_extension) or name.endswith(spreadsheet_extension.upper()):
                 move_file(spreadsheetDestination, entry, name)
                 logging.info(f"Moved spreadsheet file: {name} to {spreadsheetDestination}")
+    
+def checkIfZip(entry, name):
+        for Zip_extension in Zip_extensions:
+            if name.endswith(Zip_extension) or name.endswith(Zip_extension.upper()):
+                move_file(ZipDestination, entry, name)
+                logging.info(f"Moved Zip file: {name} to {ZipDestination}")
+    
+def checkIfInstaller(entry, name):
+        for Installer_extension in Installer_extensions:
+            if name.endswith(Installer_extension) or name.endswith(Installer_extension.upper()):
+                move_file(InstallerDestination, entry, name)
+                logging.info(f"Moved Installer file: {name} to {InstallerDestination}")
     
 def checkIfMisc(entry, name):
         newExtensionCheck(name)
