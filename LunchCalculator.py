@@ -1,5 +1,2 @@
-import math
+from nicegui import ui
 
-tax = 0.08375
-gratuity = []
-totalPeople = []
